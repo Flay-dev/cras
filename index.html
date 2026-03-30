@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRAS Jabaeté - Sistema de Agendamento</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Dashboard Admin -->
+        <div data-view="dashboard" class="active">
+            <header class="gradient-header">
+                <div class="container">
+                    <div class="header-content">
+                        <div class="logo-area">
+                            <div class="logo-icon">
+                                <i data-lucide="calendar-heart"></i>
+                            </div>
+                            <div>
+                                <h1>CRAS Jabaeté</h1>
+                                <p>Sistema Integrado de Atendimento Social</p>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            <div class="online-badge">
+                                <span class="pulse-dot"></span>
+                                <span>Sistema Online</span>
+                            </div>
+                            <button id="switchToPublic" class="btn-outline-light">
+                                <i data-lucide="users"></i>
+                                Tela Pública
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container">
+                <!-- Stats Cards Premium -->
+                <div class="stats-grid">
+                    <div class="stat-card premium">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4);">
+                            <i data-lucide="calendar-check-2"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p>Atendimentos Hoje</p>
+                            <h3 id="stat-appointments">0</h3>
+                            <span class="stat-trend positive">+12% esta semana</span>
+                        </div>
+                    </div>
+                    <div class="stat-card premium">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p>Reuniões Ativas</p>
+                            <h3 id="stat-meetings">0</h3>
+                            <span class="stat-trend">Este mês</span>
+                        </div>
+                    </div>
+                    <div class="stat-card premium">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i data-lucide="thumbs-up"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p>Presenças</p>
+                            <h3 id="stat-attendance">0</h3>
+                            <span class="stat-trend positive">Taxa 94%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card premium">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i data-lucide="badge-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p>Equipe CRAS</p>
+                            <h3>5</h3>
+                            <span class="stat-trend">Assistentes ativos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Modernas -->
+                <div class="tabs-modern">
+                    <button class="tab-btn active" data-tab="agenda">
+                        <i data-lucide="calendar"></i>
+                        <span>Agenda de Atendimentos</span>
+                    </button>
+                    <button class="tab-btn" data-tab="reunioes">
+                        <i data-lucide="users-round"></i>
+                        <span>Reuniões Coletivas</span>
+                    </button>
+                    <button class="tab-btn" data-tab="presenca">
+                        <i data-lucide="clipboard-check"></i>
+                        <span>Registro de Presenças</span>
+                    </button>
+                    <button class="tab-btn" data-tab="relatorios">
+                        <i data-lucide="bar-chart-3"></i>
+                        <span>Relatórios e Análises</span>
+                    </button>
+                </div>
+
+                <!-- Tab: Agenda -->
+                <div id="tab-agenda" class="tab-content active">
+                    <div class="two-columns">
+                        <div class="form-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="file-plus"></i>
+                                <h3>Novo Atendimento Individual</h3>
+                            </div>
+                            <form id="appointmentForm" class="premium-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="user"></i> Nome Completo</label>
+                                        <input type="text" id="apt-citizen" placeholder="Digite o nome completo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="phone"></i> Telefone/WhatsApp</label>
+                                        <input type="tel" id="apt-phone" placeholder="(11) 99999-9999" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="credit-card"></i> CPF</label>
+                                        <input type="text" id="apt-cpf" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="map-pin"></i> Bairro</label>
+                                        <select id="apt-neighborhood" required>
+                                            <option value="">Selecione o bairro</option>
+                                            <option value="Jabaeté">Jabaeté</option>
+                                            <option value="Vinte e Três de Maio">Vinte e Três de Maio</option>
+                                            <option value="Balneário Ponta da Fruta">Balneário Ponta da Fruta</option>
+                                            <option value="Ponta da Fruta">Ponta da Fruta</option>
+                                            <option value="Ulisses Guimarães">Ulisses Guimarães</option>
+                                            <option value="Praia dos Recifes">Praia dos Recifes</option>
+                                            <option value="São Conrado">São Conrado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="home"></i> Endereço Completo</label>
+                                    <input type="text" id="apt-address" placeholder="Rua, número, complemento" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="briefcase"></i> Assistente Social</label>
+                                        <select id="apt-assistant" required></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="calendar"></i> Data</label>
+                                        <input type="date" id="apt-date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="clock"></i> Horário</label>
+                                        <input type="time" id="apt-time" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="file-text"></i> Observações / Solicitação</label>
+                                    <textarea id="apt-notes" rows="3" placeholder="Descreva o motivo do atendimento..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i>
+                                    Agendar Atendimento
+                                </button>
+                            </form>
+                            <div id="apt-message" class="message-area"></div>
+                        </div>
+
+                        <div class="list-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="list"></i>
+                                <h3>Próximos Atendimentos</h3>
+                                <span class="badge-count" id="apt-count">0</span>
+                            </div>
+                            <div id="appointmentsList" class="appointments-list"></div>
+                            <div id="appointmentsEmpty" class="empty-state">
+                                <i data-lucide="calendar-x"></i>
+                                <p>Nenhum atendimento agendado</p>
+                                <span>Utilize o formulário ao lado para criar um novo agendamento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Reuniões -->
+                <div id="tab-reunioes" class="tab-content hidden">
+                    <div class="two-columns">
+                        <div class="form-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="users-round"></i>
+                                <h3>Nova Reunião Coletiva</h3>
+                            </div>
+                            <form id="meetingForm" class="premium-form">
+                                <div class="form-group">
+                                    <label><i data-lucide="tag"></i> Tipo de Reunião</label>
+                                    <select id="mtg-type" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="acolhimento">🤝 Acolhimento Institucional</option>
+                                        <option value="bpc">💰 BPC - Benefício de Prestação Continuada</option>
+                                        <option value="coletivo">👥 Reunião Coletiva Comunitária</option>
+                                        <option value="cadunico">📋 Atualização CadÚnico</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="heading"></i> Título da Reunião</label>
+                                    <input type="text" id="mtg-title" placeholder="Ex: Orientação sobre Benefícios Sociais" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="user-round"></i> Responsável</label>
+                                        <select id="mtg-assistant" required></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="calendar"></i> Data</label>
+                                        <input type="date" id="mtg-date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="clock"></i> Horário</label>
+                                        <input type="time" id="mtg-time" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="map-pin"></i> Local</label>
+                                    <input type="text" id="mtg-location" placeholder="Sala Multiuso, Auditório, etc." required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="file-text"></i> Observações</label>
+                                    <textarea id="mtg-notes" rows="3" placeholder="Informações adicionais sobre a reunião..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="calendar-plus"></i>
+                                    Criar Reunião
+                                </button>
+                            </form>
+                            <div id="mtg-message" class="message-area"></div>
+                        </div>
+
+                        <div class="list-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="list"></i>
+                                <h3>Reuniões Programadas</h3>
+                                <span class="badge-count" id="mtg-count">0</span>
+                            </div>
+                            <div class="filter-chips">
+                                <button class="filter-chip active" data-filter="all">Todas</button>
+                                <button class="filter-chip" data-filter="acolhimento">Acolhimento</button>
+                                <button class="filter-chip" data-filter="bpc">BPC</button>
+                                <button class="filter-chip" data-filter="coletivo">Coletivas</button>
+                                <button class="filter-chip" data-filter="cadunico">CadÚnico</button>
+                            </div>
+                            <div id="meetingsList" class="meetings-list"></div>
+                            <div id="meetingsEmpty" class="empty-state">
+                                <i data-lucide="calendar-x"></i>
+                                <p>Nenhuma reunião programada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Presença -->
+                <div id="tab-presenca" class="tab-content hidden">
+                    <div class="two-columns">
+                        <div class="form-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="clipboard-check"></i>
+                                <h3>Registrar Presença em Reunião</h3>
+                            </div>
+                            <form id="attendanceForm" class="premium-form">
+                                <div class="form-group">
+                                    <label><i data-lucide="calendar"></i> Selecione a Reunião</label>
+                                    <select id="att-meeting" required></select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="user"></i> Nome do Participante</label>
+                                        <input type="text" id="att-name" placeholder="Nome completo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="phone"></i> Telefone</label>
+                                        <input type="tel" id="att-phone" placeholder="(11) 99999-9999" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><i data-lucide="map-pin"></i> Bairro</label>
+                                        <select id="att-neighborhood" required>
+                                            <option value="">Selecione o bairro</option>
+                                            <option value="Jabaeté">Jabaeté</option>
+                                            <option value="Vinte e Três de Maio">Vinte e Três de Maio</option>
+                                            <option value="Balneário Ponta da Fruta">Balneário Ponta da Fruta</option>
+                                            <option value="Ponta da Fruta">Ponta da Fruta</option>
+                                            <option value="Ulisses Guimarães">Ulisses Guimarães</option>
+                                            <option value="Praia dos Recifes">Praia dos Recifes</option>
+                                            <option value="São Conrado">São Conrado</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i data-lucide="star"></i> Avaliação</label>
+                                        <select id="att-rating">
+                                            <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                                            <option value="4">⭐⭐⭐⭐ Bom</option>
+                                            <option value="3">⭐⭐⭐ Satisfatório</option>
+                                            <option value="2">⭐⭐ Precisa Melhorar</option>
+                                            <option value="1">⭐ Insatisfatório</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="check-circle"></i>
+                                    Registrar Presença
+                                </button>
+                            </form>
+                            <div id="att-message" class="message-area"></div>
+                        </div>
+
+                        <div class="list-card glass-effect">
+                            <div class="card-header">
+                                <i data-lucide="users"></i>
+                                <h3>Participantes Registrados</h3>
+                                <span class="badge-count" id="att-count">0</span>
+                            </div>
+                            <div id="attendanceList" class="attendance-list"></div>
+                            <div id="attendanceEmpty" class="empty-state">
+                                <i data-lucide="users"></i>
+                                <p>Nenhuma presença registrada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Relatórios -->
+                <div id="tab-relatorios" class="tab-content hidden">
+                    <div class="reports-grid">
+                        <div class="report-card glass-effect">
+                            <div class="report-header">
+                                <i data-lucide="pie-chart"></i>
+                                <h3>Atendimentos por Assistente</h3>
+                            </div>
+                            <div id="assistantReports" class="report-stats"></div>
+                        </div>
+                        <div class="report-card glass-effect">
+                            <div class="report-header">
+                                <i data-lucide="bar-chart-2"></i>
+                                <h3>Atendimentos por Bairro</h3>
+                            </div>
+                            <div id="neighborhoodReports" class="report-stats"></div>
+                        </div>
+                        <div class="report-card glass-effect">
+                            <div class="report-header">
+                                <i data-lucide="star"></i>
+                                <h3>Satisfação dos Usuários</h3>
+                            </div>
+                            <div id="satisfactionReport" class="satisfaction-stats">
+                                <div class="rating-circle">
+                                    <span id="avg-rating">0</span>
+                                    <span>/5</span>
+                                </div>
+                                <p>Baseado em <span id="rating-count">0</span> avaliações</p>
+                                <div class="stars-display" id="stars-display"></div>
+                            </div>
+                        </div>
+                        <div class="report-card glass-effect">
+                            <div class="report-header">
+                                <i data-lucide="trending-up"></i>
+                                <h3>Resumo Geral</h3>
+                            </div>
+                            <div class="summary-stats">
+                                <div class="summary-item">
+                                    <span>Total de Atendimentos:</span>
+                                    <strong id="total-appointments">0</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Total de Reuniões:</span>
+                                    <strong id="total-meetings">0</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Participantes:</span>
+                                    <strong id="total-attendances">0</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Bairros Atendidos:</span>
+                                    <strong>7</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="container">
+                    <p id="organization-name">CRAS Jabaeté - Centro de Referência de Assistência Social</p>
+                    <p>Atendimento: Segunda a Sexta, 8h às 17h | 📞 (11) 3000-0000</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Tela Pública -->
+        <div data-view="public">
+            <header class="gradient-header">
+                <div class="container">
+                    <div class="header-content">
+                        <div class="logo-area">
+                            <div class="logo-icon">
+                                <i data-lucide="hand-helping"></i>
+                            </div>
+                            <div>
+                                <h1>Agendamento Online</h1>
+                                <p>CRAS Jabaeté - Atendimento Social</p>
+                            </div>
+                        </div>
+                        <button id="switchToDashboard" class="btn-outline-light">
+                            <i data-lucide="shield"></i>
+                            Área Administrativa
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="container">
+                <div class="public-welcome">
+                    <h2>Bem-vindo ao Sistema de Agendamento do CRAS Jabaeté</h2>
+                    <p>Agende seu atendimento social de forma rápida e segura. Escolha um assistente, data e horário disponível.</p>
+                </div>
+
+                <div class="public-grid">
+                    <div class="availability-card glass-effect">
+                        <div class="card-header">
+                            <i data-lucide="search"></i>
+                            <h3>Verificar Disponibilidade</h3>
+                        </div>
+                        <form id="checkAvailabilityForm">
+                            <div class="form-group">
+                                <label><i data-lucide="user-round"></i> Assistente Social</label>
+                                <select id="check-assistant" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="calendar"></i> Data Desejada</label>
+                                <input type="date" id="check-date" required>
+                            </div>
+                            <button type="submit" class="btn-secondary">
+                                <i data-lucide="search"></i>
+                                Ver Horários
+                            </button>
+                        </form>
+                        <div id="availability-result" class="availability-result"></div>
+                    </div>
+
+                    <div class="appointment-card glass-effect">
+                        <div class="card-header">
+                            <i data-lucide="calendar-plus"></i>
+                            <h3>Agendar Atendimento</h3>
+                        </div>
+                        <form id="publicAppointmentForm" class="premium-form">
+                            <div class="form-group">
+                                <label><i data-lucide="user"></i> Nome Completo</label>
+                                <input type="text" id="pub-name" placeholder="Digite seu nome completo" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i data-lucide="phone"></i> Telefone/WhatsApp</label>
+                                    <input type="tel" id="pub-phone" placeholder="(11) 99999-9999" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="credit-card"></i> CPF</label>
+                                    <input type="text" id="pub-cpf" placeholder="000.000.000-00">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i data-lucide="map-pin"></i> Bairro</label>
+                                    <select id="pub-neighborhood" required>
+                                        <option value="">Selecione seu bairro</option>
+                                        <option value="Jabaeté">Jabaeté</option>
+                                        <option value="Vinte e Três de Maio">Vinte e Três de Maio</option>
+                                        <option value="Balneário Ponta da Fruta">Balneário Ponta da Fruta</option>
+                                        <option value="Ponta da Fruta">Ponta da Fruta</option>
+                                        <option value="Ulisses Guimarães">Ulisses Guimarães</option>
+                                        <option value="Praia dos Recifes">Praia dos Recifes</option>
+                                        <option value="São Conrado">São Conrado</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="home"></i> Endereço</label>
+                                    <input type="text" id="pub-address" placeholder="Rua, número" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i data-lucide="briefcase"></i> Preferência de Assistente</label>
+                                    <select id="pub-assistant" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="calendar"></i> Data</label>
+                                    <input type="date" id="pub-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i data-lucide="clock"></i> Horário</label>
+                                    <input type="time" id="pub-time" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i data-lucide="file-text"></i> Motivo do Atendimento</label>
+                                <textarea id="pub-notes" rows="3" placeholder="Descreva brevemente sua solicitação..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i data-lucide="send"></i>
+                                Confirmar Agendamento
+                            </button>
+                        </form>
+                        <div id="pub-message" class="message-area"></div>
+                    </div>
+                </div>
+
+                <div class="meetings-card glass-effect">
+                    <div class="card-header">
+                        <i data-lucide="calendar-range"></i>
+                        <h3>Próximas Reuniões Abertas ao Público</h3>
+                    </div>
+                    <div id="publicMeetingsList" class="meetings-list"></div>
+                    <div id="publicMeetingsEmpty" class="empty-state">
+                        <i data-lucide="calendar-x"></i>
+                        <p>Nenhuma reunião agendada no momento</p>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="container">
+                    <p id="pub-footer">© 2025 CRAS Jabaeté - Secretaria de Assistência Social</p>
+                    <p>Endereço: Av. Principal, s/n - Jabaeté | Telefone: (11) 3000-0000</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
